@@ -21,7 +21,7 @@ export default class SocketClient {
   private socket: Socket<EventData> | undefined;
 
   connect() {
-    this.socket = io(import.meta.env.WEB_SOCKET_HOST) as Socket<EventData>;
+    this.socket = io("http://localhost:3000") as Socket<EventData>;
   }
 
   disconnect() {
