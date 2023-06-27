@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { joinRoom } from "../../services/slices/gameSlice";
 
 function Home() {
+  const dispatch = useDispatch();
+
+  const handleClick = () => {
+    dispatch(joinRoom("abc"));
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-3xl font-bold mb-8">Morpion Gomoku</h1>
@@ -12,6 +20,7 @@ function Home() {
       <Link
         to="/gomoku"
         className="px-4 py-2 bg-blue-500 text-white font-semibold rounded shadow"
+        onClick={handleClick}
       >
         Commencer le jeu
       </Link>
