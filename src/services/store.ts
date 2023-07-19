@@ -8,7 +8,7 @@ import socketMiddleware from "../middlewares/socketMiddleware";
 
 const socket = new SocketClient();
 
-const rootReducers = combineReducers({
+export const rootReducers = combineReducers({
   auth: AuthSlice.reducer,
   game: GameSlice.reducer,
 });

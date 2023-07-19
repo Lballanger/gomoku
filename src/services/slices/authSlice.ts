@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import jwtDecode from "jwt-decode";
 
 import { AuthState, User } from "../../utilities/types";

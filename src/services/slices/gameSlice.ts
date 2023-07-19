@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 import { GameState, UpdateGridPayload } from "../../utilities/types";
@@ -21,6 +22,10 @@ export const GameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
+    socketConnection(_state, _action: PayloadAction<string>) {
+      return;
+    },
+
     joinRoom(state, action: PayloadAction<string>) {
       return {
         ...state,
@@ -64,7 +69,7 @@ export const GameSlice = createSlice({
       state.error = action.payload;
     },
 
-    setUpdateGrid(state, action: PayloadAction<UpdateGridPayload>) {
+    setUpdateGrid(_state, _action: PayloadAction<UpdateGridPayload>) {
       return;
     },
 
@@ -109,7 +114,7 @@ export const GameSlice = createSlice({
       };
     },
 
-    resetBoard(state, action: PayloadAction<string>) {
+    resetBoard(state, _action: PayloadAction<string>) {
       return {
         ...state,
         socketId: null,
@@ -142,6 +147,8 @@ export const GameSlice = createSlice({
 });
 
 export const {
+  socketConnection,
+  gameInitialization,
   joinRoom,
   roomFull,
   setUpdateGrid,

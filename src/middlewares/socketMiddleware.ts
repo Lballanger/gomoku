@@ -18,6 +18,11 @@ export default function socketMiddleware(socket: any) {
       //   break;
       // }
 
+      case "game/socketConnection": {
+        socket.connect();
+        break;
+      }
+
       // Disconnect from the socket when a user logs out
       case "user/logout": {
         socket.disconnect();
@@ -29,7 +34,6 @@ export default function socketMiddleware(socket: any) {
         /** 
             @todo Supprimer la connection lorsque que le système de login sera en place
         **/
-        socket.connect();
 
         socket.on(
           "gameInitialization",

@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { joinRoom } from "../../services/slices/gameSlice";
+import { joinRoom, socketConnection } from "../../services/slices/gameSlice";
 
 function Home() {
   const dispatch = useDispatch();
 
   const handleClick = () => {
+    dispatch(socketConnection("true"));
     dispatch(joinRoom("abc"));
   };
 

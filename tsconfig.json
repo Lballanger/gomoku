@@ -20,7 +20,8 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true
   },
-  "include": ["src"],
+  "include": ["src", "typings"],
   "references": [{ "path": "./tsconfig.node.json" }],
-  "types": ["node", "jest", "@testing-library/jest-dom"]
+  "types": ["node", "jest", "@testing-library/jest-dom"],
+  "typeRoots": ["./typings", "./node_modules/@types/"]
 }
