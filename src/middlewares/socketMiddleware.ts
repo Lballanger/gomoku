@@ -64,6 +64,8 @@ export default function socketMiddleware(socket: any) {
 
         // Listen for the updated grid
         socket.on("gridUpdated", (grid: string[][], currentPlayer: string) => {
+          console.log("gridUpdated event");
+
           dispatch({
             type: "game/getUpdateGrid",
             payload: { updatedGrid: grid, currentPlayer },

@@ -96,7 +96,7 @@ describe("Socket.io client middleware", () => {
       }
     );
 
-    // Dispatch a simulation action for the "gameInitialization" event
+    // Emit a simulation action for the "gameInitialization" event
     socket.socketClient.emit(
       "gameInitialization",
       gameInitializationTestData.socketId,
@@ -122,7 +122,6 @@ describe("Socket.io client middleware", () => {
 
     // Check that the blind is updated with the expected value
     expect(store.getState().game.room.name).toEqual("abc");
-    console.log(store.getState());
 
     socket.on("roomFull", (roomName: string) => {
       expect(roomName).toEqual(roomFullTestData.roomName);
@@ -134,5 +133,77 @@ describe("Socket.io client middleware", () => {
 
     // Ensure that socket.disconnect() is called inside the "roomFull" event
     expect(mockDisconnect).toHaveBeenCalled();
+  });
+
+  test("Test the playerSymbol event : game/playerSymbol - game/setPlayerSymbol", async () => {
+    // Connect the simulated socket to the socket middleware
+    const store = createTestStore(initialState, socket);
+    // Simulated grid of the "gameInitialization" event from the Socket.io server
+    const playerSymbolTestData = {
+      playerSymbol: "X",
+    };
+
+    // Capture actions dispatched by Socket.io middleware
+    store.dispatch(joinRoom("abc"));
+
+    // Check that the blind is updated with the expected value
+    expect(store.getState().game.room.name).toEqual("abc");
+
+    socket.on("playerSymbol", (playerSymbol: string) => {
+      expect(playerSymbol).toEqual(playerSymbolTestData.playerSymbol);
+      expect(store.getState().game.room.playerSymbol).toEqual(
+        playerSymbolTestData.playerSymbol
+      );
+    });
+
+    // Emit a simulation action for the "playerSymbol" event
+    socket.socketClient.emit("playerSymbol", playerSymbolTestData.playerSymbol);
+  });
+
+  test("Test gridUpdate event : game/gridUpdate - game/setGrid", async () => {
+    // Connect the simulated socket to the socket middleware
+    const store = createTestStore(initialState, socket);
+    // Simulated grid of the "gameInitialization" event from the Socket.io server
+    const gridUpdateTestData = {
+      grid: [
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "X", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+      ],
+      // Next player
+      currentPlayer: "O",
+    };
+
+    // Capture actions dispatched by Socket.io middleware
+    store.dispatch(joinRoom("abc"));
+
+    // Check that the blind is updated with the expected value
+    expect(store.getState().game.room.name).toEqual("abc");
+
+    socket.on("gridUpdate", (grid: string[][], currentPlayer: string) => {
+      expect(grid).toEqual(gridUpdateTestData.grid);
+      expect(currentPlayer).toEqual(gridUpdateTestData.currentPlayer);
+      expect(store.getState().game.room.grid).toEqual(gridUpdateTestData.grid);
+      expect(store.getState().game.room.currentPlayer).toEqual(
+        gridUpdateTestData.currentPlayer
+      );
+    });
+
+    // Emit a simulation action for the "gridUpdate" event
+    socket.socketClient.emit(
+      "gridUpdated",
+      gridUpdateTestData.grid,
+      gridUpdateTestData.currentPlayer
+    );
   });
 });
