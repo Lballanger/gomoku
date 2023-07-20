@@ -105,7 +105,7 @@ describe("Socket.io client middleware", () => {
     );
   });
 
-  test("Test the roomFull event : game/roomFull - game/setError - disconnect", async () => {
+  test("Test the roomFull event : game/roomFull - roomName", async () => {
     // Create a mocked function for socket.disconnect()
     const mockDisconnect = jest.fn();
     // Replace the original function with the mocked one
@@ -135,7 +135,7 @@ describe("Socket.io client middleware", () => {
     expect(mockDisconnect).toHaveBeenCalled();
   });
 
-  test("Test the playerSymbol event : game/playerSymbol - game/setPlayerSymbol", async () => {
+  test("Test the playerSymbol event : game/playerSymbol - symbol", async () => {
     // Connect the simulated socket to the socket middleware
     const store = createTestStore(initialState, socket);
     // Simulated grid of the "gameInitialization" event from the Socket.io server
@@ -160,11 +160,11 @@ describe("Socket.io client middleware", () => {
     socket.socketClient.emit("playerSymbol", playerSymbolTestData.playerSymbol);
   });
 
-  test("Test gridUpdate event : game/gridUpdate - game/setGrid", async () => {
+  test("Test gridUpdated event : game/gridUpdated - grid - currentPlayer", async () => {
     // Connect the simulated socket to the socket middleware
     const store = createTestStore(initialState, socket);
     // Simulated grid of the "gameInitialization" event from the Socket.io server
-    const gridUpdateTestData = {
+    const gridgridUpdatedTestData = {
       grid: [
         ["", "", "", "", "", "", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", "", "", "", "", "", ""],
@@ -190,20 +190,91 @@ describe("Socket.io client middleware", () => {
     // Check that the blind is updated with the expected value
     expect(store.getState().game.room.name).toEqual("abc");
 
-    socket.on("gridUpdate", (grid: string[][], currentPlayer: string) => {
-      expect(grid).toEqual(gridUpdateTestData.grid);
-      expect(currentPlayer).toEqual(gridUpdateTestData.currentPlayer);
-      expect(store.getState().game.room.grid).toEqual(gridUpdateTestData.grid);
+    socket.on("gridUpdated", (grid: string[][], currentPlayer: string) => {
+      expect(grid).toEqual(gridgridUpdatedTestData.grid);
+      expect(currentPlayer).toEqual(gridgridUpdatedTestData.currentPlayer);
+      expect(store.getState().game.room.grid).toEqual(
+        gridgridUpdatedTestData.grid
+      );
       expect(store.getState().game.room.currentPlayer).toEqual(
-        gridUpdateTestData.currentPlayer
+        gridgridUpdatedTestData.currentPlayer
       );
     });
 
     // Emit a simulation action for the "gridUpdate" event
     socket.socketClient.emit(
       "gridUpdated",
-      gridUpdateTestData.grid,
-      gridUpdateTestData.currentPlayer
+      gridgridUpdatedTestData.grid,
+      gridgridUpdatedTestData.currentPlayer
+    );
+  });
+
+  test("Test the gameOver event : game/gameOver - grid - currentPlayer - winningPlayer - winningCells", async () => {
+    // Connect the simulated socket to the socket middleware
+    const store = createTestStore(initialState, socket);
+    // Simulated grid of the "gameInitialization" event from the Socket.io server
+    const gameOverTestData = {
+      grid: [
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "O", "X", "", "", "", "", "", ""],
+        ["", "", "", "", "", "O", "X", "", "", "", "", "", ""],
+        ["", "", "", "", "", "O", "X", "", "", "", "", "", ""],
+        ["", "", "", "", "", "O", "X", "", "", "", "", "", ""],
+        ["", "", "", "", "", "O", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+      ],
+      // Next player
+      currentPlayer: "X",
+      // Winning player
+      winningPlayer: 1,
+      // Winning cells
+      winningCells: [],
+    };
+
+    // Capture actions dispatched by Socket.io middleware
+    store.dispatch(joinRoom("abc"));
+
+    // Check that the blind is updated with the expected value
+    expect(store.getState().game.room.name).toEqual("abc");
+
+    socket.on(
+      "gameOver",
+      (
+        grid: string[][],
+        currentPlayer: string,
+        winningPlayer: number,
+        winningCells: number[][]
+      ) => {
+        expect(grid).toEqual(gameOverTestData.grid);
+        expect(currentPlayer).toEqual(gameOverTestData.currentPlayer);
+        expect(winningPlayer).toEqual(gameOverTestData.winningPlayer);
+        expect(winningCells).toEqual(gameOverTestData.winningCells);
+        expect(store.getState().game.room.grid).toEqual(gameOverTestData.grid);
+        expect(store.getState().game.room.currentPlayer).toEqual(
+          gameOverTestData.currentPlayer
+        );
+        expect(store.getState().game.room.winningPlayer).toEqual(
+          gameOverTestData.winningPlayer
+        );
+        expect(store.getState().game.room.winningCells).toEqual(
+          gameOverTestData.winningCells
+        );
+      }
+    );
+
+    // Emit a simulation action for the "gameOver" event
+    socket.socketClient.emit(
+      "gameOver",
+      gameOverTestData.grid,
+      gameOverTestData.currentPlayer,
+      gameOverTestData.winningPlayer,
+      gameOverTestData.winningCells
     );
   });
 });
