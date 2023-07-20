@@ -6,19 +6,64 @@ import MockedSocket from "socket.io-mock";
 
 jest.mock("socket.io-client");
 
-// Importez les actions nécessaires pour effectuer des assertions sur le store
+// Import the actions needed to perform assertions on the store
 import { joinRoom } from "../../services/slices/gameSlice";
 
-// Mock du serveur Socket.io pour les tests
+// Socket.io server mock for tests
 let socket = new MockedSocket();
 
-// Créez une fonction utilitaire pour créer le store avec le middleware Socket.io
+// Create a utility function to create the store with the Socket.io middleware
 const createTestStore = (initialState: RootState, socket: Socket) => {
   const middleware = applyMiddleware(socketMiddleware(socket));
   return createStore(rootReducers, initialState, middleware);
 };
 
-describe("SocketClient", () => {
+// Simulated grid of the "gameInitialization" event from the Socket.io server
+const gameInitializationTestData = {
+  socketId: "123",
+  grid: [
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", "", "", "", "", "", "", ""],
+  ],
+  currentPlayer: "X",
+};
+
+// Define the `initialState` variable explicitly with RootState type
+const initialState: RootState = {
+  auth: {
+    isAuthenticated: false,
+    user: null,
+    token: null,
+    status: "idle",
+  },
+  game: {
+    socketId: null,
+    room: {
+      name: null,
+      users: null,
+      grid: null,
+      playerSymbol: null,
+      currentPlayer: null,
+      winningPlayer: null,
+      winningCells: [],
+    },
+    status: "idle",
+    error: null,
+  },
+};
+
+describe("Socket.io client middleware", () => {
   beforeEach(() => {
     socket = new MockedSocket();
   });
@@ -27,62 +72,14 @@ describe("SocketClient", () => {
     jest.restoreAllMocks();
   });
 
-  test("Grid should be initialized correctly", async () => {
-    // Grille simulée de l'événement "gameInitialization" provenant du serveur Socket.io
-    const gameInitializationTestData = {
-      socketId: "123",
-      grid: [
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", ""],
-      ],
-      currentPlayer: "X",
-    };
-
-    // Define the `initialState` variable explicitly with RootState type
-    const initialState: RootState = {
-      auth: {
-        isAuthenticated: false,
-        user: null,
-        token: null,
-        status: "idle",
-      },
-      game: {
-        socketId: null,
-        room: {
-          name: null,
-          users: null,
-          grid: null,
-          playerSymbol: null,
-          currentPlayer: null,
-          winningPlayer: null,
-          winningCells: [],
-        },
-        status: "idle",
-        error: null,
-      },
-    };
-
-    // Connecter le socket simulé au middleware de socket
+  test("Test the gameInitialization event : game/joinRoom - game/gameInitialization - socketId - grid - currentPlayer", async () => {
+    // Connect the simulated socket to the socket middleware
     const store = createTestStore(initialState, socket);
-
-    // Capturez les actions dispatchées par le middleware Socket.io
+    // Capture actions dispatched by Socket.io middleware
     store.dispatch(joinRoom("abc"));
 
-    // Vérifiez que le store est mis à jour avec la valeur attendue
+    // Check that the blind is updated with the expected value
     expect(store.getState().game.room.name).toEqual("abc");
-
-    // Attendre que l'événement "gameInitialization" soit traité
 
     socket.on(
       "gameInitialization",
@@ -99,12 +96,43 @@ describe("SocketClient", () => {
       }
     );
 
-    // Dispatchez une action de simulation de l'événement "gameInitialization" provenant du serveur Socket.io
+    // Dispatch a simulation action for the "gameInitialization" event
     socket.socketClient.emit(
       "gameInitialization",
       gameInitializationTestData.socketId,
       gameInitializationTestData.grid,
       gameInitializationTestData.currentPlayer
     );
+  });
+
+  test("Test the roomFull event : game/roomFull - game/setError - disconnect", async () => {
+    // Create a mocked function for socket.disconnect()
+    const mockDisconnect = jest.fn();
+    // Replace the original function with the mocked one
+    socket.disconnect = mockDisconnect;
+    // Connect the simulated socket to the socket middleware
+    const store = createTestStore(initialState, socket);
+    // Simulated grid of the "gameInitialization" event from the Socket.io server
+    const roomFullTestData = {
+      roomName: "abc",
+    };
+
+    // Capture actions dispatched by Socket.io middleware
+    store.dispatch(joinRoom("abc"));
+
+    // Check that the blind is updated with the expected value
+    expect(store.getState().game.room.name).toEqual("abc");
+    console.log(store.getState());
+
+    socket.on("roomFull", (roomName: string) => {
+      expect(roomName).toEqual(roomFullTestData.roomName);
+      expect(store.getState().game.error).toEqual(roomFullTestData.roomName);
+    });
+
+    // Dispatch a simulation action for the "gameInitialization" event
+    socket.socketClient.emit("roomFull", roomFullTestData.roomName);
+
+    // Ensure that socket.disconnect() is called inside the "roomFull" event
+    expect(mockDisconnect).toHaveBeenCalled();
   });
 });
