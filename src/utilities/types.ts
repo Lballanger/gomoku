@@ -28,14 +28,20 @@ export interface GameState {
   error: string | null;
 }
 
+export interface UserInRoom {
+  id: string;
+  pseudo: string;
+}
 export interface RoomState {
   name: string | null;
-  users: string[] | null;
+  users: UserInRoom[] | null;
   grid: string[][] | null;
   playerSymbol: string | null;
   currentPlayer: string | null;
   winningPlayer: string | null;
   winningCells: string[][] | null;
+  playerToInvite: string | null;
+  receivedInvitation: string | null;
 }
 
 export interface UpdateGridPayload {

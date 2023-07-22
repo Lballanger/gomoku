@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-import { GameState, UpdateGridPayload } from "../../utilities/types";
+import {
+  GameState,
+  UpdateGridPayload,
+  UserInRoom,
+} from "../../utilities/types";
 
 const initialState: GameState = {
   socketId: null,
@@ -13,6 +17,8 @@ const initialState: GameState = {
     currentPlayer: null,
     winningPlayer: null,
     winningCells: [],
+    playerToInvite: null,
+    receivedInvitation: null,
   },
   status: "idle",
   error: null,
@@ -34,6 +40,40 @@ export const GameSlice = createSlice({
           name: action.payload,
         },
         status: "success",
+      };
+    },
+
+    userJoined(state, action: PayloadAction<UserInRoom[]>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          users: action.payload,
+        },
+      };
+    },
+
+    updatePlayers(state, action: PayloadAction<UserInRoom[]>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          users: action.payload,
+        },
+      };
+    },
+
+    sendInvite(_state, _action: PayloadAction<string>) {
+      return;
+    },
+
+    receivedInvite(state, action: PayloadAction<string>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          receivedInvitation: action.payload,
+        },
       };
     },
 
@@ -126,6 +166,8 @@ export const GameSlice = createSlice({
           currentPlayer: null,
           winningPlayer: null,
           winningCells: [],
+          playerToInvite: null,
+          receivedInvitation: null,
         },
       };
     },
@@ -151,6 +193,7 @@ export const {
   gameInitialization,
   joinRoom,
   roomFull,
+  sendInvite,
   setUpdateGrid,
   setPlayerSymbol,
   setWinningPlayer,

@@ -58,6 +58,18 @@ export default function socketMiddleware(socket: any) {
           socket.disconnect();
         });
 
+        socket.on("userJoined", (players: string[][]) => {
+          dispatch({ type: "game/userJoined", payload: players });
+        });
+
+        socket.on("receivedInvite", (playerToInvite: string) => {
+          dispatch({ type: "game/receivedInvite", payload: playerToInvite });
+        });
+
+        socket.on("updatePlayers", (players: string[][]) => {
+          dispatch({ type: "game/updatePlayers", payload: players });
+        });
+
         // Listen for the player's symbol
         socket.on("playerSymbol", (symbol: string) => {
           dispatch({ type: "game/setPlayerSymbol", payload: symbol });
@@ -91,6 +103,12 @@ export default function socketMiddleware(socket: any) {
           }
         );
 
+        break;
+      }
+
+      // Send an invitation to a user
+      case "game/sendInvite": {
+        socket.emit("sendInvite", payload);
         break;
       }
 
