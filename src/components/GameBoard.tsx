@@ -7,7 +7,7 @@ import { resetBoard, setUpdateGrid } from "../services/slices/gameSlice";
 
 import symbolSound from "../assets/sounds/symbol.mp3";
 import successSound from "../assets/sounds/success.mp3";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 type GameBoardProps = {
   widthBoard: number;
@@ -19,6 +19,8 @@ type GameBoardProps = {
 const GameBoard: React.FC<GameBoardProps> = ({ widthBoard, heightBoard }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { id } = useParams<{ id: string }>();
 
   const { socketId, error } = useSelector((state: RootState) => state.game);
 
@@ -60,10 +62,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ widthBoard, heightBoard }) => {
     if (winningPlayer) {
       setTimeout(() => {
         dispatch(resetBoard("true"));
-        navigate("/");
+        navigate(`/gomoku/room/${id}`);
       }, 3000);
     }
-  }, [dispatch, winningPlayer, navigate]);
+  }, [dispatch, winningPlayer, navigate, id]);
 
   const renderGrid = () => {
     return grid?.map((row, rowIndex) => (
