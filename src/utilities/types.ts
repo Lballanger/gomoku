@@ -42,6 +42,7 @@ export interface RoomState {
   winningCells: string[][] | null;
   playerToInvite: string | null;
   receivedInvitation: string | null;
+  gameId: string | null;
 }
 
 export interface UpdateGridPayload {
