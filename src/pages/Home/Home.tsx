@@ -1,17 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { joinRoom, socketConnection } from "../../services/slices/gameSlice";
 
 function Home() {
-  const dispatch = useDispatch();
-
-  const handleClick = () => {
-    if (!selectedRoom) return;
-    dispatch(socketConnection("true"));
-    dispatch(joinRoom(selectedRoom));
-  };
-
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
   const rooms = [
@@ -70,7 +60,6 @@ function Home() {
       <Link
         to={selectedRoom ? `/gomoku/room/${selectedRoom}` : "#"}
         className="px-4 py-2 bg-blue-500 text-white font-semibold rounded shadow"
-        onClick={handleClick}
       >
         Rejoindre
       </Link>
