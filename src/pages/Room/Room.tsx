@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { RootState } from "../../services/store";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { sendInvite } from "../../services/slices/gameSlice";
+import { acceptInvite, sendInvite } from "../../services/slices/gameSlice";
 import ReceivedInviteModal from "../../components/ReceivedInviteModal";
 import SentInviteModal from "../../components/SentInviteModal";
 
@@ -21,7 +21,10 @@ const Room = () => {
   const [showSentModal, setShowSentModal] = useState(false);
 
   const handleAccept = () => {
-    setShowReceivedModal(false);
+    if (receivedInvitation) {
+      dispatch(acceptInvite(receivedInvitation));
+      setShowReceivedModal(false);
+    }
   };
 
   const handleDecline = () => {
