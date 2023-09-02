@@ -19,6 +19,7 @@ const initialState: GameState = {
     winningCells: [],
     playerToInvite: null,
     receivedInvitation: null,
+    gameId: null,
   },
   status: "idle",
   error: null,
@@ -43,7 +44,36 @@ export const GameSlice = createSlice({
       };
     },
 
+    leaveRoom(state, _action: PayloadAction<string>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          name: null,
+          users: null,
+          grid: null,
+          playerSymbol: null,
+          currentPlayer: null,
+          winningPlayer: null,
+          winningCells: [],
+          playerToInvite: null,
+          receivedInvitation: null,
+          gameId: null,
+        },
+      };
+    },
+
     userJoined(state, action: PayloadAction<UserInRoom[]>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          users: action.payload,
+        },
+      };
+    },
+
+    userLeft(state, action: PayloadAction<UserInRoom[]>) {
       return {
         ...state,
         room: {
@@ -77,12 +107,33 @@ export const GameSlice = createSlice({
       };
     },
 
+    acceptInvite(state, _action: PayloadAction<string>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          receivedInvitation: null,
+        },
+      };
+    },
+
+    leaveGame(state, _action: PayloadAction<string>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          gameId: null,
+        },
+      };
+    },
+
     gameInitialization(
       state,
       action: PayloadAction<{
         socketId: string;
         grid: string[][];
         currentPlayer: string;
+        gameId: string;
       }>
     ) {
       return {
@@ -92,6 +143,7 @@ export const GameSlice = createSlice({
           ...state.room,
           grid: action.payload.grid,
           currentPlayer: action.payload.currentPlayer,
+          gameId: action.payload.gameId,
         },
       };
     },
@@ -157,10 +209,8 @@ export const GameSlice = createSlice({
     resetBoard(state, _action: PayloadAction<string>) {
       return {
         ...state,
-        socketId: null,
         room: {
-          name: null,
-          users: null,
+          ...state.room,
           grid: null,
           playerSymbol: null,
           currentPlayer: null,
@@ -168,6 +218,7 @@ export const GameSlice = createSlice({
           winningCells: [],
           playerToInvite: null,
           receivedInvitation: null,
+          gameId: null,
         },
       };
     },
@@ -192,8 +243,11 @@ export const {
   socketConnection,
   gameInitialization,
   joinRoom,
+  leaveRoom,
   roomFull,
   sendInvite,
+  acceptInvite,
+  leaveGame,
   setUpdateGrid,
   setPlayerSymbol,
   setWinningPlayer,

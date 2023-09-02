@@ -38,13 +38,19 @@ export default function socketMiddleware(socket: any) {
 
         socket.on(
           "gameInitialization",
-          (socketId: string, grid: string[][], currentPlayer: string) => {
+          (
+            socketId: string,
+            grid: string[][],
+            currentPlayer: string,
+            gameId: string
+          ) => {
             dispatch({
               type: "game/gameInitialization",
               payload: {
                 socketId,
                 grid,
                 currentPlayer,
+                gameId,
               },
             });
           }
@@ -63,7 +69,10 @@ export default function socketMiddleware(socket: any) {
         });
 
         socket.on("receivedInvite", (playerToInvite: string) => {
-          dispatch({ type: "game/receivedInvite", payload: playerToInvite });
+          dispatch({
+            type: "game/receivedInvite",
+            payload: playerToInvite,
+          });
         });
 
         socket.on("updatePlayers", (players: string[][]) => {
@@ -83,6 +92,10 @@ export default function socketMiddleware(socket: any) {
             type: "game/getUpdateGrid",
             payload: { updatedGrid: grid, currentPlayer },
           });
+        });
+
+        socket.on("userLeft", (players: string[][]) => {
+          dispatch({ type: "game/userLeft", payload: players });
         });
 
         // Listen for the game over event
@@ -109,6 +122,17 @@ export default function socketMiddleware(socket: any) {
       // Send an invitation to a user
       case "game/sendInvite": {
         socket.emit("sendInvite", payload);
+        break;
+      }
+
+      case "game/acceptInvite": {
+        socket.emit("acceptInvite", payload);
+        break;
+      }
+
+      // Leave the room when a user navigates away from the game page
+      case "game/leaveRoom": {
+        socket.emit("leaveRoom", payload);
         break;
       }
 
