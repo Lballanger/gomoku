@@ -59,6 +59,7 @@ const initialState: RootState = {
       winningCells: [],
       playerToInvite: null,
       receivedInvitation: null,
+      gameId: null,
     },
     status: "idle",
     error: null,
