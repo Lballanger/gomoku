@@ -49,6 +49,7 @@ const initialState: RootState = {
   },
   game: {
     socketId: null,
+    rooms: null,
     room: {
       name: null,
       users: null,
@@ -61,6 +62,7 @@ const initialState: RootState = {
       receivedInvitation: null,
       gameId: null,
     },
+    socketConnected: false,
     status: "idle",
     error: null,
   },

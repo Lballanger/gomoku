@@ -21,6 +21,14 @@ export default function socketMiddleware(socket: any) {
 
       case "game/socketConnection": {
         socket.connect();
+
+        socket.on("socketConnected", () => {
+          dispatch({ type: "game/socketConnected", payload: socket.id });
+        });
+
+        socket.on("roomInformation", (room: string[][]) => {
+          dispatch({ type: "game/roomInformation", payload: room });
+        });
         break;
       }
 

@@ -5,10 +5,12 @@ import {
   GameState,
   UpdateGridPayload,
   UserInRoom,
+  RoomsState,
 } from "../../utilities/types";
 
 const initialState: GameState = {
   socketId: null,
+  rooms: null,
   room: {
     name: null,
     users: null,
@@ -21,6 +23,7 @@ const initialState: GameState = {
     receivedInvitation: null,
     gameId: null,
   },
+  socketConnected: false,
   status: "idle",
   error: null,
 };
@@ -31,6 +34,21 @@ export const GameSlice = createSlice({
   reducers: {
     socketConnection(_state, _action: PayloadAction<string>) {
       return;
+    },
+
+    socketConnected(state, action: PayloadAction<string>) {
+      return {
+        ...state,
+        socketId: action.payload,
+        socketConnected: true,
+      };
+    },
+
+    roomInformation(state, action: PayloadAction<RoomsState[]>) {
+      return {
+        ...state,
+        rooms: action.payload,
+      };
     },
 
     joinRoom(state, action: PayloadAction<string>) {

@@ -1,10 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import {
-  joinRoom,
-  leaveRoom,
-  socketConnection,
-} from "../services/slices/gameSlice";
+import { joinRoom, leaveRoom } from "../services/slices/gameSlice";
 import { useEffect } from "react";
 import { RootState } from "../services/store";
 
@@ -14,16 +10,15 @@ const SocketIOProvider = () => {
 
   const navigate = useNavigate();
 
-  const { socketId } = useSelector((state: RootState) => state.game);
+  const { socketConnected } = useSelector((state: RootState) => state.game);
 
   const { gameId } = useSelector((state: RootState) => state.game.room);
 
   useEffect(() => {
-    if (id && !socketId) {
-      dispatch(socketConnection("true"));
+    if (id && socketConnected) {
       dispatch(joinRoom(id));
     }
-  }, [dispatch, id, socketId]);
+  }, [dispatch, socketConnected, id]);
 
   useEffect(() => {
     // Déconnexion du socket.io lorsque le composant est démonté
@@ -38,7 +33,7 @@ const SocketIOProvider = () => {
 
   useEffect(() => {
     if (gameId) {
-      navigate(`/gomoku/room/${id}/game/${gameId}`);
+      navigate(`/gomoku/room/${id}/game/${gameId}`, { replace: true });
     }
   }, [gameId, navigate, id]);
 

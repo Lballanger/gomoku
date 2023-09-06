@@ -23,9 +23,18 @@ export interface UsersState {
 
 export interface GameState {
   socketId: string | null;
+  rooms: RoomsState[] | null;
   room: RoomState;
+  socketConnected: boolean;
   status: "idle" | "loading" | "success" | "error";
   error: string | null;
+}
+
+export interface RoomsState {
+  name: string;
+  capacity: number;
+  path: string;
+  activeConnections: number;
 }
 
 export interface UserInRoom {

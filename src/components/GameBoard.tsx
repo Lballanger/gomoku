@@ -24,6 +24,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ widthBoard, heightBoard }) => {
 
   const { socketId, error } = useSelector((state: RootState) => state.game);
 
+  const { gameId } = useSelector((state: RootState) => state.game.room);
+
   const { grid, currentPlayer, playerSymbol, winningPlayer, winningCells } =
     useSelector((state: RootState) => state.game.room);
 
@@ -62,10 +64,17 @@ const GameBoard: React.FC<GameBoardProps> = ({ widthBoard, heightBoard }) => {
     if (winningPlayer) {
       setTimeout(() => {
         dispatch(resetBoard("true"));
-        navigate(`/gomoku/room/${id}`);
+        navigate(`/gomoku/room/${id}`, { replace: true });
       }, 3000);
     }
   }, [dispatch, winningPlayer, navigate, id]);
+
+  // Redirection vers la page de la room si l'ID de la partie n'est pas définie
+  useEffect(() => {
+    if (!gameId) {
+      navigate(`/gomoku/room/${id}`, { replace: true });
+    }
+  }, [gameId, navigate, id]);
 
   const renderGrid = () => {
     return grid?.map((row, rowIndex) => (

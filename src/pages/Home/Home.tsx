@@ -1,14 +1,12 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { RootState } from "../../services/store";
 
 function Home() {
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
-  const rooms = [
-    { name: "Salle 1", capacity: "0/100", path: "1" },
-    { name: "Salle 2", capacity: "0/100", path: "2" },
-    { name: "Salle 3", capacity: "0/100", path: "3" },
-  ];
+  const { rooms } = useSelector((state: RootState) => state.game);
 
   const handleRoomSelection = (path: string) => {
     setSelectedRoom(path);
@@ -27,31 +25,35 @@ function Home() {
         <div className="flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center mb-4">
             <ul className="flex flex-col items-center justify-center">
-              {rooms.map((room) => (
-                <li
-                  key={room.name}
-                  className={`flex flex-row items-center justify-between rounded-s-lg my-1  border border-white cursor-pointer ${
-                    selectedRoom === room.path ? " rounded-e-lg border" : ""
-                  }`}
-                  style={
-                    selectedRoom === room.path
-                      ? { border: "1px solid blue", backgroundColor: "#f0f8ff" }
-                      : {}
-                  }
-                  onClick={() => handleRoomSelection(room.path)}
-                >
-                  <span
-                    className={`mx-2 ${selectedRoom === room.path ? "" : ""}`}
-                  >{`Salle ${room.path}`}</span>
-                  <span
-                    className={`px-2 py-1 bg-green-500 text-white font-semibold rounded-e-lg ${
-                      selectedRoom === room.path ? "" : ""
+              {rooms &&
+                rooms.map((room) => (
+                  <li
+                    key={room.name}
+                    className={`flex flex-row items-center justify-between rounded-s-lg my-1  border border-white cursor-pointer ${
+                      selectedRoom === room.path ? " rounded-e-lg border" : ""
                     }`}
+                    style={
+                      selectedRoom === room.path
+                        ? {
+                            border: "1px solid blue",
+                            backgroundColor: "#f0f8ff",
+                          }
+                        : {}
+                    }
+                    onClick={() => handleRoomSelection(room.path)}
                   >
-                    {room.capacity}
-                  </span>
-                </li>
-              ))}
+                    <span
+                      className={`mx-2 ${selectedRoom === room.path ? "" : ""}`}
+                    >{`Salle ${room.path}`}</span>
+                    <span
+                      className={`px-2 py-1 bg-green-500 text-white font-semibold rounded-e-lg ${
+                        selectedRoom === room.path ? "" : ""
+                      }`}
+                    >
+                      {room.activeConnections} / {room.capacity}
+                    </span>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>
