@@ -10,13 +10,11 @@ import successSound from "../assets/sounds/success.mp3";
 import { useParams, useNavigate } from "react-router-dom";
 
 type GameBoardProps = {
-  widthBoard: number;
-  heightBoard: number;
   nbRows: number;
   pxCells: number;
 };
 
-const GameBoard: React.FC<GameBoardProps> = ({ widthBoard, heightBoard }) => {
+const GameBoard: React.FC<GameBoardProps> = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -78,10 +76,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ widthBoard, heightBoard }) => {
 
   const renderGrid = () => {
     return grid?.map((row, rowIndex) => (
-      <div
-        key={`row-${rowIndex}`}
-        className="flex justify-center px-1" // Utiliser flex-wrap pour permettre le retour à la ligne des cellules
-      >
+      <div key={`row-${rowIndex}`} className="flex justify-center items-center">
         <audio ref={symbolSoundRef}>
           <source src={symbolSound} type="audio/mpeg" />
         </audio>
@@ -98,7 +93,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ widthBoard, heightBoard }) => {
           return (
             <div
               key={`row-${rowIndex}-cell-${colIndex}`}
-              className={`w-[${widthBoard}px] h-[${heightBoard}px] max-sm:w-12 max-sm:h-8 max-md:w-16 max-md:h-16 max-lg:w-20 max-lg:h-16 xl:w-20 xl:h-16 max-sm:aspect-w-1 max-sm:aspect-h-1 border border-[#ffffff] flex items-center justify-center text-2xl text-[#000000]  cursor-pointer 
+              className={`
+              max-sm:w-12 max-sm:h-8
+              max-md:w-16 max-md:h-14 
+              max-lg:w-16 max-lg:h-14
+              max-sm:aspect-w-1 max-sm:aspect-h-1
+              w-16 h-14
+              flex items-center justify-center text-2xl text-[#000000]
+              border border-white cursor-pointer
               ${isWinningCell ? "bg-yellow-300" : "bg-[#ebdcb2]"}`}
               onClick={() => handleCellClick(rowIndex, colIndex)}
             >
