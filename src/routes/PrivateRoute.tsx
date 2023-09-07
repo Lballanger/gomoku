@@ -2,8 +2,7 @@ import { useSelector } from "react-redux";
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 
 // Import de l'interface AuthState depuis le slice authSlice
-import { AuthState } from "../services/slices/authSlice"; // Chemin d'importation approprié
-
+import { AuthState } from "../utilities/types";
 interface RootState {
   auth: AuthState;
 }
