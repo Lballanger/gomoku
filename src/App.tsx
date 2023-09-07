@@ -14,7 +14,7 @@ const App = () => {
   }, [dispatch]);
 
   return (
-    <div className="app">
+    <div className="app relative">
       <RouterProvider router={router} />
     </div>
   );
