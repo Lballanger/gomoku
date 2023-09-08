@@ -1,25 +1,12 @@
-class LocalStorageMock {
-  store: { [key: string]: string };
+// Créez un mock pour localStorage
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+};
 
-  constructor() {
-    this.store = {};
-  }
-
-  getItem(key: string) {
-    return this.store[key] || null;
-  }
-
-  setItem(key: string, value: string) {
-    this.store[key] = value.toString();
-  }
-
-  removeItem(key: string) {
-    delete this.store[key];
-  }
-
-  clear() {
-    this.store = {};
-  }
-}
-
-(global as any).localStorage = new LocalStorageMock();
+// Affectez le mock à window.localStorage
+Object.defineProperty(window, "localStorage", {
+  value: localStorageMock,
+});

@@ -1,5 +1,6 @@
 import { io, Socket } from "socket.io-client";
 
+const SOCKET_SERVER_URL = "https://api-gomoku.onrender.com";
 interface ServerToClientEvents {
   // On
   roomFull: (roomName: string) => void;
@@ -21,7 +22,7 @@ export default class SocketClient {
   private socket: Socket<EventData> | undefined;
 
   connect() {
-    this.socket = io("http://localhost:3000") as Socket<EventData>;
+    this.socket = io(SOCKET_SERVER_URL) as Socket<EventData>;
   }
 
   disconnect() {
