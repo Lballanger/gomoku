@@ -54,7 +54,7 @@ const Room = () => {
 
   return (
     <>
-      <div className="h-screen text-blue-500">
+      <div className="min-h-[100dvh] text-blue-500">
         <MobileNavbar
           onBackClick={() => window.history.back()}
           onCloseClick={() => (window.location.href = "/")}
