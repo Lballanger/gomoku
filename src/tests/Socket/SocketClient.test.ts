@@ -53,6 +53,7 @@ const initialState: RootState = {
     room: {
       name: null,
       users: null,
+      gameList: null,
       grid: null,
       playerSymbol: null,
       currentPlayer: null,

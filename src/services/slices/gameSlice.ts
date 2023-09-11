@@ -6,6 +6,7 @@ import {
   UpdateGridPayload,
   UserInRoom,
   RoomsState,
+  GameList,
 } from "../../utilities/types";
 
 const initialState: GameState = {
@@ -14,6 +15,7 @@ const initialState: GameState = {
   room: {
     name: null,
     users: null,
+    gameList: null,
     grid: null,
     playerSymbol: null,
     currentPlayer: null,
@@ -62,21 +64,25 @@ export const GameSlice = createSlice({
       };
     },
 
-    leaveRoom(state, _action: PayloadAction<string>) {
+    roomFull: (state, action: PayloadAction<string>) => {
+      state.room = {
+        ...state.room,
+        name: null,
+        users: null,
+        grid: null,
+        playerSymbol: null,
+        currentPlayer: null,
+      };
+      state.status = "error";
+      state.error = action.payload;
+    },
+
+    gameList: (state, action: PayloadAction<GameList[]>) => {
       return {
         ...state,
         room: {
           ...state.room,
-          name: null,
-          users: null,
-          grid: null,
-          playerSymbol: null,
-          currentPlayer: null,
-          winningPlayer: null,
-          winningCells: [],
-          playerToInvite: null,
-          receivedInvitation: null,
-          gameId: null,
+          gameList: action.payload,
         },
       };
     },
@@ -92,16 +98,6 @@ export const GameSlice = createSlice({
     },
 
     userLeft(state, action: PayloadAction<UserInRoom[]>) {
-      return {
-        ...state,
-        room: {
-          ...state.room,
-          users: action.payload,
-        },
-      };
-    },
-
-    updatePlayers(state, action: PayloadAction<UserInRoom[]>) {
       return {
         ...state,
         room: {
@@ -134,13 +130,31 @@ export const GameSlice = createSlice({
         },
       };
     },
-
-    leaveGame(state, _action: PayloadAction<string>) {
+    leaveRoom(state, _action: PayloadAction<string>) {
       return {
         ...state,
         room: {
           ...state.room,
+          name: null,
+          users: null,
+          grid: null,
+          playerSymbol: null,
+          currentPlayer: null,
+          winningPlayer: null,
+          winningCells: [],
+          playerToInvite: null,
+          receivedInvitation: null,
           gameId: null,
+        },
+      };
+    },
+
+    updatePlayers(state, action: PayloadAction<UserInRoom[]>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          users: action.payload,
         },
       };
     },
@@ -166,17 +180,14 @@ export const GameSlice = createSlice({
       };
     },
 
-    roomFull: (state, action: PayloadAction<string>) => {
-      state.room = {
-        ...state.room,
-        name: null,
-        users: null,
-        grid: null,
-        playerSymbol: null,
-        currentPlayer: null,
+    leaveGame(state, _action: PayloadAction<string>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          gameId: null,
+        },
       };
-      state.status = "error";
-      state.error = action.payload;
     },
 
     setUpdateGrid(_state, _action: PayloadAction<UpdateGridPayload>) {

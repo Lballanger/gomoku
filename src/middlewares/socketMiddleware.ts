@@ -76,6 +76,10 @@ export default function socketMiddleware(socket: any) {
           dispatch({ type: "game/userJoined", payload: players });
         });
 
+        socket.on("gameList", (gameList: string[][]) => {
+          dispatch({ type: "game/gameList", payload: gameList });
+        });
+
         socket.on("receivedInvite", (playerToInvite: string) => {
           dispatch({
             type: "game/receivedInvite",

@@ -37,13 +37,10 @@ export interface RoomsState {
   activeConnections: number;
 }
 
-export interface UserInRoom {
-  id: string;
-  pseudo: string;
-}
 export interface RoomState {
   name: string | null;
   users: UserInRoom[] | null;
+  gameList: GameList[] | null;
   grid: string[][] | null;
   playerSymbol: string | null;
   currentPlayer: string | null;
@@ -54,6 +51,17 @@ export interface RoomState {
   gameId: string | null;
 }
 
+export interface UserInRoom {
+  id: string;
+  pseudo: string;
+}
+
+export interface GameList {
+  id: string;
+  players: string[];
+  grid: string[][];
+  winner: string | null;
+}
 export interface UpdateGridPayload {
   currentPlayer: string;
   updatedGrid: string[][];

@@ -1,6 +1,7 @@
 import { io, Socket } from "socket.io-client";
 
-const SOCKET_SERVER_URL = "https://api-gomoku.onrender.com";
+// const SOCKET_SERVER_URL = "https://api-gomoku.onrender.com";
+const SOCKET_SERVER_URL = "http://localhost:3000";
 interface ServerToClientEvents {
   // On
   roomFull: (roomName: string) => void;
