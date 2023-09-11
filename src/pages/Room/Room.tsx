@@ -57,7 +57,7 @@ const Room = () => {
           onBackClick={() => window.history.back()}
           onCloseClick={() => (window.location.href = "/")}
         />
-        <div className="flex flex-col justify-between lg:flex-row">
+        <div className="flex flex-col justify-between lg:flex-row lg:justify-center">
           <div className="left rounded h-[240px] w-full px-4 lg:m-3 lg:h-[740px] lg:w-1/2 lg:flex lg:flex-col lg:justify-between">
             <div className=" rounded mt-5 lg:shadow-md lg:p-2 lg:mt-0">
               <h2 className="text-xl font-semibold mb-4 font-mono text-center">
