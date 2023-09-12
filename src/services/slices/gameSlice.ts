@@ -107,8 +107,14 @@ export const GameSlice = createSlice({
       };
     },
 
-    sendInvite(_state, _action: PayloadAction<string>) {
-      return;
+    sendInvite(state, action: PayloadAction<string>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          playerToInvite: action.payload,
+        },
+      };
     },
 
     receivedInvite(state, action: PayloadAction<string>) {
@@ -130,6 +136,29 @@ export const GameSlice = createSlice({
         },
       };
     },
+
+    declineInvite(state, _action: PayloadAction<string>) {
+      console.log("envoie de declined");
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          receivedInvitation: null,
+        },
+      };
+    },
+
+    declinedInvite(state, _action: PayloadAction<string>) {
+      console.log("reception de declined");
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          playerToInvite: null,
+        },
+      };
+    },
+
     leaveRoom(state, _action: PayloadAction<string>) {
       return {
         ...state,
@@ -276,6 +305,7 @@ export const {
   roomFull,
   sendInvite,
   acceptInvite,
+  declineInvite,
   leaveGame,
   setUpdateGrid,
   setPlayerSymbol,

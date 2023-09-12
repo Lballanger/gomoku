@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { RootState } from "../../services/store";
 import { useDispatch, useSelector } from "react-redux";
-import { acceptInvite, sendInvite } from "../../services/slices/gameSlice";
+import {
+  acceptInvite,
+  declineInvite,
+  sendInvite,
+} from "../../services/slices/gameSlice";
 import ReceivedInviteModal from "../../components/ReceivedInviteModal";
 import SentInviteModal from "../../components/SentInviteModal";
 import MobileNavbar from "../../components/MobileNavBar";
@@ -9,7 +13,7 @@ import MobileNavbar from "../../components/MobileNavBar";
 const Room = () => {
   const dispatch = useDispatch();
 
-  const { users, receivedInvitation, gameList } = useSelector(
+  const { users, playerToInvite, receivedInvitation, gameList } = useSelector(
     (state: RootState) => state.game.room
   );
 
@@ -22,12 +26,11 @@ const Room = () => {
   const handleAccept = () => {
     if (receivedInvitation) {
       dispatch(acceptInvite(receivedInvitation));
-      setShowReceivedModal(false);
     }
   };
 
   const handleDecline = () => {
-    setShowReceivedModal(false);
+    if (receivedInvitation) dispatch(declineInvite(receivedInvitation));
   };
 
   const handlePlayerSelection = (id: string) => {
@@ -41,14 +44,23 @@ const Room = () => {
   const handleClick = () => {
     if (!selectedPlayer) return;
     dispatch(sendInvite(selectedPlayer));
-    setShowSentModal(true);
   };
 
   useEffect(() => {
     if (receivedInvitation) {
       setShowReceivedModal(true);
+    } else {
+      setShowReceivedModal(false);
     }
   }, [receivedInvitation]);
+
+  useEffect(() => {
+    if (playerToInvite) {
+      setShowSentModal(true);
+    } else {
+      setShowSentModal(false);
+    }
+  }, [playerToInvite]);
 
   return (
     <>

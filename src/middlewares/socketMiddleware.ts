@@ -87,6 +87,13 @@ export default function socketMiddleware(socket: any) {
           });
         });
 
+        socket.on("declinedInvite", (playerToInvite: string) => {
+          dispatch({
+            type: "game/declinedInvite",
+            payload: playerToInvite,
+          });
+        });
+
         socket.on("updatePlayers", (players: string[][]) => {
           dispatch({ type: "game/updatePlayers", payload: players });
         });
@@ -139,6 +146,11 @@ export default function socketMiddleware(socket: any) {
 
       case "game/acceptInvite": {
         socket.emit("acceptInvite", payload);
+        break;
+      }
+
+      case "game/declineInvite": {
+        socket.emit("declineInvite", payload);
         break;
       }
 
