@@ -3,6 +3,7 @@ import RoutesConfig from "./routes/RoutesConfig";
 import { useDispatch } from "react-redux";
 import { socketConnection } from "./services/slices/gameSlice";
 import { useEffect } from "react";
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter(RoutesConfig);
 

@@ -138,7 +138,6 @@ export const GameSlice = createSlice({
     },
 
     declineInvite(state, _action: PayloadAction<string>) {
-      console.log("envoie de declined");
       return {
         ...state,
         room: {
@@ -149,7 +148,6 @@ export const GameSlice = createSlice({
     },
 
     declinedInvite(state, _action: PayloadAction<string>) {
-      console.log("reception de declined");
       return {
         ...state,
         room: {
@@ -292,6 +290,13 @@ export const GameSlice = createSlice({
       return {
         ...state,
         ...initialState,
+      };
+    },
+
+    setError(state, action: PayloadAction<string>) {
+      return {
+        ...state,
+        error: action.payload,
       };
     },
   },

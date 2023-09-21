@@ -105,8 +105,6 @@ export default function socketMiddleware(socket: any) {
 
         // Listen for the updated grid
         socket.on("gridUpdated", (grid: string[][], currentPlayer: string) => {
-          console.log("gridUpdated event");
-
           dispatch({
             type: "game/getUpdateGrid",
             payload: { updatedGrid: grid, currentPlayer },
@@ -134,6 +132,10 @@ export default function socketMiddleware(socket: any) {
             dispatch({ type: "game/setWinningCells", payload: winningCells });
           }
         );
+
+        socket.on("error", (payload: string) => {
+          dispatch({ type: "game/setError", payload });
+        });
 
         break;
       }

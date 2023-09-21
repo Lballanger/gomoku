@@ -6,12 +6,15 @@ import {
   declineInvite,
   sendInvite,
 } from "../../services/slices/gameSlice";
+import { ToastContainer, toast } from "react-toastify";
 import ReceivedInviteModal from "../../components/ReceivedInviteModal";
 import SentInviteModal from "../../components/SentInviteModal";
 import MobileNavbar from "../../components/MobileNavBar";
 
 const Room = () => {
   const dispatch = useDispatch();
+
+  const { error } = useSelector((state: RootState) => state.game);
 
   const { users, playerToInvite, receivedInvitation, gameList } = useSelector(
     (state: RootState) => state.game.room
@@ -62,11 +65,20 @@ const Room = () => {
     }
   }, [playerToInvite]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error, {
+        draggable: false,
+        position: toast.POSITION.BOTTOM_LEFT,
+      });
+    }
+  }, [error]);
+
   return (
     <>
       <div className="min-h-[100dvh] text-blue-500">
         <MobileNavbar
-          onBackClick={() => window.history.back()}
+          title="Gomoku"
           onCloseClick={() => (window.location.href = "/")}
         />
         <div className="flex flex-col justify-between lg:flex-row lg:justify-center">
@@ -194,6 +206,7 @@ const Room = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
       {receivedInvitation && showReceivedModal && (
         <ReceivedInviteModal
           playerToInvite={receivedInvitation}
