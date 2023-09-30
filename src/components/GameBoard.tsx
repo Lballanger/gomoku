@@ -20,14 +20,12 @@ const GameBoard: React.FC<GameBoardProps> = () => {
 
   const { id } = useParams<{ id: string }>();
 
-  const { socketId, error } = useSelector((state: RootState) => state.game);
+  const { socketId } = useSelector((state: RootState) => state.game);
 
   const { gameId } = useSelector((state: RootState) => state.game.room);
 
   const { grid, currentPlayer, playerSymbol, winningPlayer, winningCells } =
     useSelector((state: RootState) => state.game.room);
-
-  console.log(error);
 
   const symbolSoundRef = useRef<HTMLAudioElement | null>(null);
   const successSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -94,15 +92,21 @@ const GameBoard: React.FC<GameBoardProps> = () => {
             <div
               key={`row-${rowIndex}-cell-${colIndex}`}
               className={`
-              max-sm:w-12 max-sm:h-8
-              max-md:w-16 max-md:h-14 
-              max-lg:w-16 max-lg:h-14
+              max-sm:w-8 max-sm:h-8
               max-sm:aspect-w-1 max-sm:aspect-h-1
-              w-16 h-14
-              flex items-center justify-center text-2xl text-[#000000]
-              border border-white cursor-pointer
-              ${isWinningCell ? "bg-yellow-300" : "bg-[#ebdcb2]"}`}
+              max-md:w-12 max-md:h-10 
+              max-lg:w-12 max-lg:h-10
+              w-12 h-11
+              flex items-center justify-center text-2xl text-white
+              "  cursor-pointer
+              ${isWinningCell ? "bg-yellow-300" : "bg-[#2C3E50]"}`}
               onClick={() => handleCellClick(rowIndex, colIndex)}
+              style={{
+                borderStyle: "solid",
+                borderWidth: "1px",
+                borderImage:
+                  "linear-gradient(10deg, #009bf6, #A1FFCE, #009bf6, #FAFFD1) 1",
+              }}
             >
               {cell}
             </div>
