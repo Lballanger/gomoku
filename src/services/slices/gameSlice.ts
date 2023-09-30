@@ -179,6 +179,23 @@ export const GameSlice = createSlice({
       };
     },
 
+    leaveGameRoom(state, _action) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          grid: null,
+          playerSymbol: null,
+          currentPlayer: null,
+          winningPlayer: null,
+          winningCells: [],
+          playerToInvite: null,
+          receivedInvitation: null,
+          gameId: null,
+        },
+      };
+    },
+
     updatePlayers(state, action: PayloadAction<UserInRoom[]>) {
       return {
         ...state,
@@ -206,16 +223,6 @@ export const GameSlice = createSlice({
           grid: action.payload.grid,
           currentPlayer: action.payload.currentPlayer,
           gameId: action.payload.gameId,
-        },
-      };
-    },
-
-    leaveGame(state, _action: PayloadAction<string>) {
-      return {
-        ...state,
-        room: {
-          ...state.room,
-          gameId: null,
         },
       };
     },
@@ -350,11 +357,11 @@ export const {
   gameInitialization,
   joinRoom,
   leaveRoom,
+  leaveGameRoom,
   roomFull,
   sendInvite,
   acceptInvite,
   declineInvite,
-  leaveGame,
   setUpdateGrid,
   setPlayerSymbol,
   setWinningPlayer,

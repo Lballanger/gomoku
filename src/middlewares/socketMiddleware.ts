@@ -162,6 +162,11 @@ export default function socketMiddleware(socket: any) {
         break;
       }
 
+      case "game/leaveGameRoom": {
+        socket.emit("leaveGameRoom");
+        break;
+      }
+
       case "game/setUpdateGrid": {
         // Update the grid when a user makes a move
         socket.emit(
