@@ -62,6 +62,8 @@ const initialState: RootState = {
       playerToInvite: null,
       receivedInvitation: null,
       gameId: null,
+      roomMessage: [],
+      gameMessage: [],
     },
     socketConnected: false,
     status: "idle",

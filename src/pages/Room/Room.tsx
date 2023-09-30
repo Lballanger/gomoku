@@ -5,20 +5,26 @@ import {
   acceptInvite,
   declineInvite,
   sendInvite,
+  sentMessageInRoom,
 } from "../../services/slices/gameSlice";
 import { ToastContainer, toast } from "react-toastify";
 import ReceivedInviteModal from "../../components/ReceivedInviteModal";
 import SentInviteModal from "../../components/SentInviteModal";
 import MobileNavbar from "../../components/MobileNavBar";
+import Chat from "../../components/Chat";
+
+interface Message {
+  sender: string;
+  text: string;
+}
 
 const Room = () => {
   const dispatch = useDispatch();
 
   const { error } = useSelector((state: RootState) => state.game);
 
-  const { users, playerToInvite, receivedInvitation, gameList } = useSelector(
-    (state: RootState) => state.game.room
-  );
+  const { users, playerToInvite, receivedInvitation, gameList, roomMessage } =
+    useSelector((state: RootState) => state.game.room);
 
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
@@ -74,6 +80,16 @@ const Room = () => {
     }
   }, [error]);
 
+  const sendMessage = (messageText: string) => {
+    // Créez un objet Message avec un expéditeur fictif, puis envoyez-le
+    const message: Message = {
+      sender: "Utilisateur", // Mettez le nom de l'expéditeur souhaité ici
+      text: messageText,
+    };
+
+    dispatch(sentMessageInRoom(message));
+  };
+
   return (
     <>
       <div className="min-h-[100dvh] text-blue-500">
@@ -87,7 +103,7 @@ const Room = () => {
               <h2 className="text-xl font-semibold mb-4 font-mono text-center">
                 Parties en cours
               </h2>
-              <div className="gamesList h-[170px] overflow-y-scroll lg:h-[350px]">
+              <div className="gamesList h-[170px] overflow-y-auto lg:h-[350px]">
                 <form className="">
                   <table className="w-full">
                     <tbody>
@@ -126,32 +142,17 @@ const Room = () => {
                 </form>
               </div>
             </div>
-            <div className="relative rounded h-[450px] px-4 mt-5 lg:shadow-md lg:p-2 lg:mt-0 lg:block hidden ">
-              <h2 className="text-xl font-semibold mb-4 font-mono text-center">
-                Chat
-              </h2>
-              <div className="chat">
-                <div className="messages">
-                  <div className="message">
-                    <span className="font-semibold"></span>
-                    <span className="text-sm"></span>
-                  </div>
-                </div>
-                <div className="input absolute bottom-0 left-0 w-full">
-                  <input
-                    type="text"
-                    className="w-full p-2 rounded border-2 border-blue-500"
-                    placeholder="Message"
-                  />
-                </div>
-              </div>
-            </div>
+            <Chat
+              messages={roomMessage}
+              sendMessage={sendMessage}
+              maxHeight={"max-h-[230px]"}
+            />
           </div>
           <div className="rounded h-[350px] w-full px-4 lg:m-3 lg:h-[740px] lg:w-1/3 lg:shadow-md lg:relative">
             <h2 className="text-xl font-semibold mb-4 font-mono text-center">
               Joueurs connectés
             </h2>
-            <div className="playersList h-[400px] overflow-y-scroll lg:h-[610px]">
+            <div className="playersList h-[400px] overflow-y-auto lg:h-[610px]">
               <form>
                 <table className=" w-full relative">
                   <thead className="flex sticky top-0 bg-white">

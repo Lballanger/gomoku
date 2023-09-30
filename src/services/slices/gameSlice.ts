@@ -7,6 +7,7 @@ import {
   UserInRoom,
   RoomsState,
   GameList,
+  Message,
 } from "../../utilities/types";
 
 const initialState: GameState = {
@@ -24,6 +25,8 @@ const initialState: GameState = {
     playerToInvite: null,
     receivedInvitation: null,
     gameId: null,
+    roomMessage: [],
+    gameMessage: [],
   },
   socketConnected: false,
   status: "idle",
@@ -299,6 +302,46 @@ export const GameSlice = createSlice({
         error: action.payload,
       };
     },
+
+    receivedMessageInRoom(state, action: PayloadAction<Message[]>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          roomMessage: action.payload,
+        },
+      };
+    },
+
+    sentMessageInRoom(state, action: PayloadAction<Message>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          roomMessage: [...state.room.roomMessage, action.payload],
+        },
+      };
+    },
+
+    receivedMessageInGame(state, action: PayloadAction<Message[]>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          gameMessage: action.payload,
+        },
+      };
+    },
+
+    sentMessageInGame(state, action: PayloadAction<Message>) {
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          gameMessage: [...state.room.gameMessage, action.payload],
+        },
+      };
+    },
   },
 });
 
@@ -319,4 +362,6 @@ export const {
   resetBoard,
   resetRoom,
   reset,
+  sentMessageInRoom,
+  sentMessageInGame,
 } = GameSlice.actions;

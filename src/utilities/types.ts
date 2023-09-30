@@ -45,10 +45,12 @@ export interface RoomState {
   playerSymbol: string | null;
   currentPlayer: string | null;
   winningPlayer: string | null;
-  winningCells: string[][] | null;
+  winningCells: string[][];
   playerToInvite: string | null;
   receivedInvitation: string | null;
   gameId: string | null;
+  roomMessage: Message[];
+  gameMessage: Message[];
 }
 
 export interface UserInRoom {
@@ -61,6 +63,11 @@ export interface GameList {
   players: string[];
   grid: string[][];
   winner: string | null;
+}
+
+export interface Message {
+  sender: string;
+  text: string;
 }
 export interface UpdateGridPayload {
   currentPlayer: string;
