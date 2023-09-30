@@ -18,7 +18,7 @@ export default function chatSocketMiddleware(socket: any) {
           dispatch({ type: "game/receivedMessageInRoom", payload: messages });
         });
 
-        socket.on("receivedMessageInGame", (message: string) => {
+        socket.on("receivedMessageInGame", (message: string[][]) => {
           dispatch({
             type: "game/receivedMessageInGame",
             payload: message,
