@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { RootState } from "../services/store";
 
@@ -27,6 +27,16 @@ const GameBoard: React.FC<GameBoardProps> = () => {
   const { grid, currentPlayer, playerSymbol, winningPlayer, winningCells } =
     useSelector((state: RootState) => state.game.room);
 
+  const [selectedCell, setSelectedCell] = useState<{
+    row: number;
+    col: number;
+  } | null>(null);
+
+  const [hightlightedCell, setHighlightedCell] = useState<{
+    row: number;
+    col: number;
+  } | null>(null);
+
   const symbolSoundRef = useRef<HTMLAudioElement | null>(null);
   const successSoundRef = useRef<HTMLAudioElement | null>(null);
 
@@ -34,11 +44,20 @@ const GameBoard: React.FC<GameBoardProps> = () => {
     if (grid && grid[row][col] === "") {
       if (currentPlayer !== socketId) return; // Ignorer le clic si ce n'est pas le tour du joueur actuel
 
-      const updatedGrid = Array.from(grid, (rowArray) => [...rowArray]);
-
-      if (playerSymbol !== null && currentPlayer !== null) {
-        updatedGrid[row][col] = playerSymbol;
-        dispatch(setUpdateGrid({ currentPlayer, updatedGrid }));
+      if (!selectedCell) {
+        setSelectedCell({ row, col });
+        setHighlightedCell({ row, col });
+      } else if (selectedCell.row === row && selectedCell.col === col) {
+        const updatedGrid = Array.from(grid, (rowArray) => [...rowArray]);
+        if (playerSymbol !== null && currentPlayer !== null) {
+          updatedGrid[row][col] = playerSymbol;
+          dispatch(setUpdateGrid({ currentPlayer, updatedGrid }));
+        }
+        setSelectedCell(null);
+        setHighlightedCell(null);
+      } else {
+        setSelectedCell({ row, col });
+        setHighlightedCell({ row, col });
       }
 
       // if (symbolSoundRef.current) symbolSoundRef.current.play();
@@ -106,6 +125,12 @@ const GameBoard: React.FC<GameBoardProps> = () => {
                 borderWidth: "1px",
                 borderImage:
                   "linear-gradient(10deg, #009bf6, #A1FFCE, #009bf6, #FAFFD1) 1",
+                backgroundColor: `${
+                  hightlightedCell?.row === rowIndex &&
+                  hightlightedCell?.col === colIndex
+                    ? "#63717f"
+                    : "#2C3E50"
+                }`,
               }}
             >
               {cell}
