@@ -303,7 +303,7 @@ export const GameSlice = createSlice({
       };
     },
 
-    setError(state, action: PayloadAction<string>) {
+    setError(state, action: PayloadAction<string | null>) {
       return {
         ...state,
         error: action.payload,
@@ -371,4 +371,5 @@ export const {
   reset,
   sentMessageInRoom,
   sentMessageInGame,
+  setError,
 } = GameSlice.actions;

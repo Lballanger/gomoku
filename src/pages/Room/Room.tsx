@@ -6,6 +6,7 @@ import {
   declineInvite,
   sendInvite,
   sentMessageInRoom,
+  setError,
 } from "../../services/slices/gameSlice";
 import { ToastContainer, toast } from "react-toastify";
 import ReceivedInviteModal from "../../components/ReceivedInviteModal";
@@ -77,8 +78,9 @@ const Room = () => {
         draggable: false,
         position: toast.POSITION.BOTTOM_LEFT,
       });
+      dispatch(setError(null));
     }
-  }, [error]);
+  }, [error, dispatch]);
 
   const sendMessage = (messageText: string) => {
     // Créez un objet Message avec un expéditeur fictif, puis envoyez-le
