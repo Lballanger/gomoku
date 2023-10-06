@@ -21,6 +21,7 @@ const initialState: GameState = {
     playerSymbol: null,
     currentPlayer: null,
     winningPlayer: null,
+    lastMoveIndexPlayed: null,
     winningCells: [],
     playerToInvite: null,
     receivedInvitation: null,
@@ -232,12 +233,32 @@ export const GameSlice = createSlice({
     },
 
     getUpdateGrid(state, action: PayloadAction<UpdateGridPayload>) {
+      const grid = state.room.grid || [];
+      const updatedGrid = action.payload.updatedGrid || [];
+
+      let lastMoveIndex = -1;
+
+      // Parcourez les deux tableaux à partir de la fin pour trouver le dernier coup
+      for (let rowIndex = grid.length - 1; rowIndex >= 0; rowIndex--) {
+        for (
+          let colIndex = grid[rowIndex].length - 1;
+          colIndex >= 0;
+          colIndex--
+        ) {
+          if (grid[rowIndex][colIndex] !== updatedGrid[rowIndex][colIndex]) {
+            lastMoveIndex = rowIndex * grid[rowIndex].length + colIndex;
+            break;
+          }
+        }
+      }
+
       return {
         ...state,
         room: {
           ...state.room,
           grid: action.payload.updatedGrid,
           currentPlayer: action.payload.currentPlayer,
+          lastMoveIndexPlayed: lastMoveIndex,
         },
       };
     },

@@ -59,6 +59,7 @@ const initialState: RootState = {
       currentPlayer: null,
       winningPlayer: null,
       winningCells: [],
+      lastMoveIndexPlayed: null,
       playerToInvite: null,
       receivedInvitation: null,
       gameId: null,

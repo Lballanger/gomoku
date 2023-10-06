@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { RootState } from "../services/store";
 
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
 import { resetBoard, setUpdateGrid } from "../services/slices/gameSlice";
 
 import symbolSound from "../assets/sounds/symbol.mp3";
@@ -24,8 +25,14 @@ const GameBoard: React.FC<GameBoardProps> = () => {
 
   const { gameId } = useSelector((state: RootState) => state.game.room);
 
-  const { grid, currentPlayer, playerSymbol, winningPlayer, winningCells } =
-    useSelector((state: RootState) => state.game.room);
+  const {
+    grid,
+    currentPlayer,
+    playerSymbol,
+    lastMoveIndexPlayed,
+    winningPlayer,
+    winningCells,
+  } = useSelector((state: RootState) => state.game.room);
 
   const [selectedCell, setSelectedCell] = useState<{
     row: number;
@@ -91,6 +98,21 @@ const GameBoard: React.FC<GameBoardProps> = () => {
     }
   }, [gameId, navigate, id]);
 
+  useEffect(() => {
+    if (currentPlayer === socketId) {
+      toast("C'est votre tour", {
+        position: "top-center",
+        autoClose: 550,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, [currentPlayer, socketId]);
+
   const renderGrid = () => {
     return grid?.map((row, rowIndex) => (
       <div key={`row-${rowIndex}`} className="flex justify-center items-center">
@@ -125,11 +147,17 @@ const GameBoard: React.FC<GameBoardProps> = () => {
                 borderWidth: "1px",
                 borderImage:
                   "linear-gradient(10deg, #009bf6, #A1FFCE, #009bf6, #FAFFD1) 1",
+                userSelect: "none",
                 backgroundColor: `${
                   hightlightedCell?.row === rowIndex &&
                   hightlightedCell?.col === colIndex
                     ? "#63717f"
                     : "#2C3E50"
+                }`,
+                color: `${
+                  lastMoveIndexPlayed === rowIndex * grid.length + colIndex
+                    ? "#ffff00"
+                    : "#fff"
                 }`,
               }}
             >
@@ -137,6 +165,7 @@ const GameBoard: React.FC<GameBoardProps> = () => {
             </div>
           );
         })}
+        <ToastContainer />
       </div>
     ));
   };

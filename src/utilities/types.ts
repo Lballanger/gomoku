@@ -45,6 +45,7 @@ export interface RoomState {
   playerSymbol: string | null;
   currentPlayer: string | null;
   winningPlayer: string | null;
+  lastMoveIndexPlayed: number | null;
   winningCells: string[][];
   playerToInvite: string | null;
   receivedInvitation: string | null;
